@@ -27,13 +27,13 @@ function alien_find_append() {
   local OLDPREFIX=
   for ((I=1; I<=4; I++)); do
     echo "alien_find $PREF $PAT ($I/4)..." >&2
-    timeout --signal=9 30s alien_find $PREF $PAT > $TMPF 2> /dev/null || continue
+    timeout --signal=9 40s alien_find $PREF $PAT > $TMPF 2> /dev/null || continue
     grep -q "^$PREF" $TMPF || alien_robust_ls $PREF || continue
     grep "^$PREF" $TMPF | sort -u | while read LINE; do
       NEWPREFIX=${LINE%/*}
       [[ $NEWPREFIX == $OLDPREFIX ]] || { OLDPREFIX=$NEWPREFIX; echo $OLDPREFIX:; }
       echo ${LINE##*/}
-    done
+    done || true
     rm -f $TMPF
     return 0
   done
